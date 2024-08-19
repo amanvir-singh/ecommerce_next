@@ -1,11 +1,17 @@
-"use client"
+"use client";
 import Link from 'next/link';
-import { FaShoppingCart } from 'react-icons/fa'; 
+import { FaShoppingCart, FaSearch } from 'react-icons/fa'; 
 import { useState } from 'react';
 
 const Header = () => {
-
   const [cartItems, setCartItems] = useState(3); 
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    // Implement search functionality here
+    console.log("Searching for:", searchQuery);
+  };
 
   return (
     <header className="py-4 bg-white shadow-md dark:bg-white-800">
@@ -35,14 +41,28 @@ const Header = () => {
             About
           </Link>
         </nav>
-        <Link href="/cart" className="relative flex items-center text-black hover:opacity-75 transition duration-300">
-  <FaShoppingCart className="text-2xl" />
-  {cartItems > 0 && (
-    <span className="absolute -top-4 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
-      {cartItems}
-    </span>
-  )}
-</Link>
+ 
+        <form onSubmit={handleSearch} className="flex items-center relative">
+          <input
+            type="text"
+            placeholder="Search..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="border border-gray-300 rounded-l-md py-2 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          <button type="submit" className="absolute right-0 top-0 mt-2 mr-2">
+            <FaSearch className="text-gray-500" />
+          </button>
+        </form>
+     
+        <Link href="/cart" className="relative flex items-center text-black hover:opacity-75 transition duration-300 ml-4">
+          <FaShoppingCart className="text-2xl" />
+          {cartItems > 0 && (
+            <span className="absolute -top-4 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+              {cartItems}
+            </span>
+          )}
+        </Link>
       </div>
     </header>
   );
