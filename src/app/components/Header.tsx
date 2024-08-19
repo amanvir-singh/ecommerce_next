@@ -9,7 +9,6 @@ const Header = () => {
 
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Implement search functionality here
     console.log("Searching for:", searchQuery);
   };
 
@@ -41,8 +40,14 @@ const Header = () => {
             About
           </Link>
         </nav>
- 
-        <form onSubmit={handleSearch} className="flex items-center relative">
+        
+        {/* Create Product Button */}
+        <Link href="/create" className="border border-black rounded-md px-4 py-2 text-black hover:bg-gray-200 transition duration-300">
+          Create Product
+        </Link>
+
+        {/* Search Form */}
+        <form onSubmit={handleSearch} className="flex items-center relative ml-4">
           <input
             type="text"
             placeholder="Search..."
@@ -55,6 +60,7 @@ const Header = () => {
           </button>
         </form>
      
+        {/* Cart Icon */}
         <Link href="/cart" className="relative flex items-center text-black hover:opacity-75 transition duration-300 ml-4">
           <FaShoppingCart className="text-2xl" />
           {cartItems > 0 && (
