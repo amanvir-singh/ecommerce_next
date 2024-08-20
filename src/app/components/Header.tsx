@@ -3,14 +3,18 @@ import Link from 'next/link';
 import { FaShoppingCart, FaSearch } from 'react-icons/fa'; 
 import { useState } from 'react';
 import { useCart } from './CartContext'; 
+import { useRouter } from 'next/navigation';
 
 const Header = () => {
   const { state } = useCart(); 
   const [searchQuery, setSearchQuery] = useState('');
+  const router = useRouter();
 
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("Searching for:", searchQuery);
+    if (searchQuery.trim()) {
+      router.push(`/search/${searchQuery}`);
+    }
   };
 
   return (
