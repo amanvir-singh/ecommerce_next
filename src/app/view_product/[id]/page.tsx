@@ -1,19 +1,29 @@
+"use client";
+
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Product } from '../../lib/types';
-import { getProductById } from '../../lib/actions'; 
+import { getProductById, deleteProduct } from '../../lib/actions'; 
 import AddToCartButton from '../../ui/AddToCardButton';
 
-async function ProductPreview({ params }: { params: { id: string } }) {
-  const product: Product | null = await getProductById(params.id);
+function ProductPreview({ product }: { product: Product }) {
+  const [showConfirmation, setShowConfirmation] = useState(false);
+  const router = useRouter();
 
-  if (!product) {
-    return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="max-w-4xl mx-auto">
-          <h1 className="text-3xl font-bold mb-4">Product not found</h1>
-        </div>
-      </div>
-    );
-  }
+  const handleDelete = async () => {
+    setShowConfirmation(true);
+  };
+
+  const confirmDelete = async () => {
+    try {
+      await deleteProduct(product.id);
+      router.push('/'); 
+    } catch (error) {
+      console.error("Error deleting product:", error);
+      
+    }
+    setShowConfirmation(false);
+  };
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -30,12 +40,59 @@ async function ProductPreview({ params }: { params: { id: string } }) {
           <div className="md:w-1/2">
             <p className="text-xl font-semibold mb-2">${product.price.toFixed(2)}</p>
             <p className="text-white-700 mb-4">{product.description}</p>
-            <AddToCartButton product={product} />
+            <div className="flex space-x-4">
+              <AddToCartButton product={product} />
+              <button
+                onClick={handleDelete}
+                className="bg-red-600 text-white font-bold py-2 px-4 rounded hover:bg-red-700 transition duration-300"
+              >
+                Delete Product From Database
+              </button>
+            </div>
           </div>
         </div>
       </div>
+
+      {showConfirmation && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="bg-white p-6 rounded-lg">
+            <p className="mb-4 text-black">Are you sure you want to delete this product?</p>
+            <div className="flex justify-end space-x-4">
+              <button
+                onClick={() => setShowConfirmation(false)}
+                className="bg-gray-300 text-black font-bold py-2 px-4 rounded hover:bg-gray-400 transition duration-300"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmDelete}
+                className="bg-red-600 text-white font-bold py-2 px-4 rounded hover:bg-red-700 transition duration-300"
+              >
+                Confirm Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
 
-export default ProductPreview;
+
+async function ProductPreviewWrapper({ params }: { params: { id: string } }) {
+  const product: Product | null = await getProductById(params.id);
+
+  if (!product) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="max-w-4xl mx-auto">
+          <h1 className="text-3xl font-bold mb-4">Product not found</h1>
+        </div>
+      </div>
+    );
+  }
+
+  return <ProductPreview product={product} />;
+}
+
+export default ProductPreviewWrapper;

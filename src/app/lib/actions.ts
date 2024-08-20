@@ -1,6 +1,6 @@
 import { Product } from './types';
 import { app } from "../../../firebase";
-import { getDatabase, ref, set, get, child } from 'firebase/database';
+import { getDatabase, ref, set, get, child, remove } from 'firebase/database';
 
 
 const db = getDatabase(app);
@@ -23,4 +23,9 @@ export async function getProductById(id: string): Promise<Product | null> {
 export async function addProduct(product: Product): Promise<void> {
   const dbRef = ref(db, `products/${product.id}`);
   await set(dbRef, product);
+}
+
+export async function deleteProduct(id: string): Promise<void> {
+  const dbRef = ref(db, `products/${id}`);
+  await remove(dbRef);
 }
