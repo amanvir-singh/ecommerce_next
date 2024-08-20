@@ -23,11 +23,11 @@ const ProductCard = ({ product }: { product: Product }) => {
     <Card className="border rounded-lg bg-white p-2 shadow-md max-w-xs"> 
       <CardHeader className="text-gray-900 text-center"> 
         <CardTitle>
-          <Link href={`./product/${product.id}`} className="text-center">{product.name}</Link>
+          <Link href={`./view_product/${product.id}`} className="text-center">{product.name}</Link>
         </CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col items-center"> 
-        <Link href={`./product/${product.id}`}>
+        <Link href={`./view_product/${product.id}`}>
           <img 
             src={product.imageUrl} 
             alt={product.name} 
