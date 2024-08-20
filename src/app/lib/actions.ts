@@ -1,7 +1,7 @@
 import { Product } from './types';
 import { app } from "../../../firebase";
-import { getDatabase, ref, set, get, child, remove } from 'firebase/database';
-
+import { getDatabase, ref, set, get, child, remove,push } from 'firebase/database';
+import { revalidatePath } from 'next/cache';
 
 const db = getDatabase(app);
 
@@ -30,3 +30,28 @@ export async function deleteProduct(id: string): Promise<void> {
   await remove(dbRef);
 }
 
+export async function placeOrder(orderData: {
+  items: (Product & { quantity: number })[];
+  totalPrice: number;
+  name: string;
+  address: string;
+  postalCode: string;
+  email: string;
+  phone: string;
+}): Promise<void> {
+  const ordersRef = ref(db, 'orders');
+  const newOrderRef = push(ordersRef);
+  
+  await set(newOrderRef, {
+    ...orderData,
+    items: orderData.items.map(item => ({
+      id: item.id,
+      name: item.name,
+      price: item.price,
+      quantity: item.quantity
+    })),
+    date: new Date().toISOString()
+  });
+
+  
+}
