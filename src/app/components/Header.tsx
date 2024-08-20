@@ -8,12 +8,31 @@ import { useRouter } from 'next/navigation';
 const Header = () => {
   const { state } = useCart(); 
   const [searchQuery, setSearchQuery] = useState('');
+  const [showPasswordPopup, setShowPasswordPopup] = useState(false);
+  const [password, setPassword] = useState('');
   const router = useRouter();
 
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (searchQuery.trim()) {
       router.push(`/search/${searchQuery}`);
+      setSearchQuery("");
+    }
+  };
+
+  const handleCreateProductClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    setShowPasswordPopup(true);
+  };
+
+  const handlePasswordSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (password === "admin") {
+      setShowPasswordPopup(false);
+      setPassword('');
+      router.push('/create');
+    } else {
+      alert("Incorrect password. Please try again.");
     }
   };
 
@@ -46,12 +65,14 @@ const Header = () => {
           </Link>
         </nav>
         
-        
-        <Link href="/create" className="border border-black rounded-md px-4 py-2 text-black hover:bg-gray-200 transition duration-300">
+        <a
+          href="/create"
+          onClick={handleCreateProductClick}
+          className="border border-black rounded-md px-4 py-2 text-black hover:bg-gray-200 transition duration-300"
+        >
           Create Product
-        </Link>
+        </a>
 
-        
         <form onSubmit={handleSearch} className="flex items-center relative ml-4">
           <input
             type="text"
@@ -65,7 +86,6 @@ const Header = () => {
           </button>
         </form>
      
-       
         <Link href="/cart" className="relative flex items-center text-black hover:opacity-75 transition duration-300 ml-4">
           <FaShoppingCart className="text-2xl" />
           {state.items.length > 0 && (
@@ -75,6 +95,42 @@ const Header = () => {
           )}
         </Link>
       </div>
+
+      {showPasswordPopup && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg">
+            <h2 className="text-black font-bold mb-4">Enter Password</h2>
+            <h3 className="text-black font-bold mb-4">Password: admin - For Development</h3>
+            <form onSubmit={handlePasswordSubmit}>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="border text-black border-gray-300 rounded-md py-2 px-4 w-full mb-4"
+                placeholder="Enter password"
+              />
+              <div className="flex justify-end space-x-4">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowPasswordPopup(false);
+                    setPassword('');
+                  }}
+                  className="bg-gray-300 text-black font-bold py-2 px-4 rounded hover:bg-gray-400 transition duration-300"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="bg-blue-600 text-white font-bold py-2 px-4 rounded hover:bg-blue-700 transition duration-300"
+                >
+                  Submit
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </header>
   );
 };

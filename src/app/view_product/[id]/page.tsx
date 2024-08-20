@@ -8,10 +8,23 @@ import AddToCartButton from '../../ui/AddToCardButton';
 
 function ProductPreview({ product }: { product: Product }) {
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const [showPasswordPopup, setShowPasswordPopup] = useState(false);
+  const [password, setPassword] = useState('');
   const router = useRouter();
 
   const handleDelete = async () => {
-    setShowConfirmation(true);
+    setShowPasswordPopup(true);
+  };
+
+  const handlePasswordSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (password === "admin") {
+      setShowPasswordPopup(false);
+      setPassword('');
+      setShowConfirmation(true);
+    } else {
+      alert("Incorrect password. Please try again.");
+    }
   };
 
   const confirmDelete = async () => {
@@ -20,7 +33,6 @@ function ProductPreview({ product }: { product: Product }) {
       router.push('/'); 
     } catch (error) {
       console.error("Error deleting product:", error);
-      
     }
     setShowConfirmation(false);
   };
@@ -53,6 +65,42 @@ function ProductPreview({ product }: { product: Product }) {
         </div>
       </div>
 
+      {showPasswordPopup && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg">
+            <h2 className="text-xl font-bold mb-4 text-black">Enter Password to Delete</h2>
+            <h3 className="text-black font-bold mb-4">Password: admin - For Development</h3>
+            <form onSubmit={handlePasswordSubmit}>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="border border-gray-300 rounded-md py-2 px-4 w-full mb-4 text-black"
+                placeholder="Enter password"
+              />
+              <div className="flex justify-end space-x-4">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowPasswordPopup(false);
+                    setPassword('');
+                  }}
+                  className="bg-gray-300 text-black font-bold py-2 px-4 rounded hover:bg-gray-400 transition duration-300"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="bg-blue-600 text-white font-bold py-2 px-4 rounded hover:bg-blue-700 transition duration-300"
+                >
+                  Submit
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
       {showConfirmation && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
           <div className="bg-white p-6 rounded-lg">
@@ -77,7 +125,6 @@ function ProductPreview({ product }: { product: Product }) {
     </div>
   );
 }
-
 
 async function ProductPreviewWrapper({ params }: { params: { id: string } }) {
   const product: Product | null = await getProductById(params.id);

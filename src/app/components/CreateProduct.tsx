@@ -10,7 +10,7 @@ const CreateProduct = () => {
   const router = useRouter();
 
   const [name, setName] = useState("");
-  const [price, setPrice] = useState<number | string>(""); // Allow for empty string initially
+  const [price, setPrice] = useState<number | string>("");
   const [description, setDescription] = useState("");
   const [imageUrl, setImageUrl] = useState("");
 

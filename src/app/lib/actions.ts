@@ -29,3 +29,4 @@ export async function deleteProduct(id: string): Promise<void> {
   const dbRef = ref(db, `products/${id}`);
   await remove(dbRef);
 }
+
