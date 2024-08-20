@@ -23,8 +23,8 @@ To get started with the application, follow these steps:
 
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/yourusername/ecommerce-app.git
-   cd ecommerce-app
+   git clone https://github.com/amanvir-singh/ecommerce_next.git
+   cd ecommerce_next
    ```
 2. **Install dependencies**:
     ```bash
